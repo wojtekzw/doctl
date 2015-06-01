@@ -68,6 +68,7 @@ func main() {
 		ActionCommand,
 		DomainCommand,
 		DropletCommand,
+		ImageCommand,
 		RegionCommand,
 		SizeCommand,
 		SSHCommand,
