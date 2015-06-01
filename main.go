@@ -37,7 +37,7 @@ func main() {
 			Usage:  "API Key for DO APIv2.",
 			EnvVar: "DIGITALOCEAN_API_KEY, DIGITAL_OCEAN_API_KEY",
 		},
-		cli.StringFlag{Name: "format,f", Value: "yaml", Usage: "Format for output."},
+		cli.StringFlag{Name: "format,f", Value: "table", Usage: "Format for output."},
 		cli.BoolFlag{Name: "debug,d", Usage: "Turn on debug output."},
 	}
 	app.Before = func(ctx *cli.Context) error {
@@ -52,12 +52,14 @@ func main() {
 		}
 
 		switch ctx.String("format") {
+		case "table":
+			OutputFormat = ctx.String("format")
 		case "json":
 			OutputFormat = ctx.String("format")
 		case "yaml":
 			OutputFormat = ctx.String("format")
 		default:
-			fmt.Printf("Invalid output format: %s. Available output options: json, yaml.\n", ctx.String("format"))
+			fmt.Printf("Invalid output format: %s. Available output options: table, json, yaml.\n", ctx.String("format"))
 			os.Exit(64)
 		}
 

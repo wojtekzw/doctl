@@ -82,7 +82,7 @@ func sshCreate(ctx *cli.Context) {
 		os.Exit(1)
 	}
 
-	WriteOutput(key)
+	outputSsh([]godo.Key{key})
 }
 
 func sshList(ctx *cli.Context) {
@@ -127,12 +127,7 @@ func sshList(ctx *cli.Context) {
 		opt.Page = page + 1
 	}
 
-	cliOut := NewCLIOutput()
-	defer cliOut.Flush()
-	cliOut.Header("ID", "Name", "Fingerprint")
-	for _, key := range keyList {
-		cliOut.Writeln("%d\t%s\t%s\n", key.ID, key.Name, key.Fingerprint)
-	}
+	outputSsh(keyList)
 }
 
 func sshFind(ctx *cli.Context) {
@@ -155,7 +150,7 @@ func sshFind(ctx *cli.Context) {
 		os.Exit(64)
 	}
 
-	WriteOutput(key)
+	outputSsh([]godo.Key{key})
 }
 
 func sshDestroy(ctx *cli.Context) {
@@ -206,4 +201,14 @@ func sshDestroy(ctx *cli.Context) {
 	}
 
 	fmt.Printf("Key %s destroyed.\n", key.Name)
+}
+
+func outputSsh(keys []godo.Key) {
+	rowValues := func(datum interface{}) []interface{} {
+		key := datum.(godo.Key)
+		return []interface{}{key.ID, key.Name, key.Fingerprint}
+	}
+
+	headers := []string{"ID", "Name", "Fingerprint"}
+	WriteCollectionOutput(keys, headers, "%d\t%s\t%s\n", rowValues)
 }
