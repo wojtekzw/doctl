@@ -43,10 +43,11 @@ func main() {
 	app.Before = func(ctx *cli.Context) error {
 		if ctx.String("api-key") != "" {
 			APIKey = ctx.String("api-key")
+		} else if config, err := LoadConfigHash(); config != nil && err == nil {
+			APIKey = config[configApiKey]
 		}
 
-		if APIKey == "" && ctx.BoolT("help") != false {
-			cli.ShowAppHelp(ctx)
+		if APIKey == "" && ctx.Bool("help") == false {
 			fmt.Println("Must provide API Key via DIGITALOCEAN_API_KEY environment variable or via CLI argument.")
 			os.Exit(1)
 		}
@@ -66,6 +67,7 @@ func main() {
 	app.Commands = []cli.Command{
 		AccountCommand,
 		ActionCommand,
+		AuthorizeCommand,
 		DomainCommand,
 		DropletCommand,
 		RegionCommand,
